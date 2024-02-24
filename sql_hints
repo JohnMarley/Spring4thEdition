@@ -1,0 +1,23 @@
+#console commands
+login cmd: mysql -u root -p
+pwd: X!5dFx8C
+show databases;
+
+#select db
+USE `spring_bank_app_db`;
+
+show tables;
+
+#table details
+desc bank_account_details;
+
+#check data
+select * from fixed_deposit_details;
+
+#connection details
+#jdbc:mysql://host:port/database_name
+
+show variables like 'hostname';
+show variables like 'port';
+show variables like 'socket';
+show variables like 'host';
