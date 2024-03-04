@@ -1,0 +1,5 @@
+#console commands
+mongosh
+
+#show db
+show dbs

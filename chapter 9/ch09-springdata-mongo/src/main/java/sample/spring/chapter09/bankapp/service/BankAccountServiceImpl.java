@@ -9,10 +9,10 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
-import com.querydsl.core.types.Predicate;
+//import com.querydsl.core.types.Predicate;
 
 import sample.spring.chapter09.bankapp.domain.BankAccountDetails;
-import sample.spring.chapter09.bankapp.domain.QBankAccountDetails;
+//import sample.spring.chapter09.bankapp.domain.QBankAccountDetails;
 import sample.spring.chapter09.bankapp.repository.BankAccountRepository;
 
 @Service
@@ -82,13 +82,13 @@ public class BankAccountServiceImpl implements BankAccountService {
 	}
 
 	// -- QuerDsl example
-	@Override
-	public Iterable<BankAccountDetails> getHighValueFds() {
-		Predicate whereClause = QBankAccountDetails.bankAccountDetails.fixedDeposits.any().active.eq("Y")
-				.and(QBankAccountDetails.bankAccountDetails.fixedDeposits.any().fdAmount.gt(1000))
-				.and(QBankAccountDetails.bankAccountDetails.fixedDeposits.any().tenure.between(6, 12));
-		return bankAccountRepository.findAll(whereClause);
-	}
+//	@Override
+//	public Iterable<BankAccountDetails> getHighValueFds() {
+//		Predicate whereClause = QBankAccountDetails.bankAccountDetails.fixedDeposits.any().active.eq("Y")
+//				.and(QBankAccountDetails.bankAccountDetails.fixedDeposits.any().fdAmount.gt(1000))
+//				.and(QBankAccountDetails.bankAccountDetails.fixedDeposits.any().tenure.between(6, 12));
+//		return bankAccountRepository.findAll(whereClause);
+//	}
 	
 	//-- Query by Example
 	@Override

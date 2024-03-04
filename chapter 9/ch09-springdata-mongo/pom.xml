@@ -8,7 +8,7 @@
 	<version>0.1.0.BUILD-SNAPSHOT</version>
 	<name>ch09-springdata-mongo</name>
 	<properties>
-		<spring.version>5.0.1.RELEASE</spring.version>
+		<spring.version>6.0.6</spring.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<repositories>
@@ -36,15 +36,18 @@
 		</pluginRepository>
 	</pluginRepositories>
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-mongodb -->
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-mongodb</artifactId>
-			<version>2.0.1.RELEASE</version>
+			<version>4.1.0</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync -->
 		<dependency>
 			<groupId>org.mongodb</groupId>
-			<artifactId>mongodb-driver</artifactId>
-			<version>3.5.0</version>
+			<artifactId>mongodb-driver-sync</artifactId>
+			<version>4.9.1</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.annotation</groupId>
@@ -54,12 +57,12 @@
 		<dependency>
 			<groupId>com.querydsl</groupId>
 			<artifactId>querydsl-mongodb</artifactId>
-			<version>4.1.3</version>
+			<version>5.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.querydsl</groupId>
 			<artifactId>querydsl-apt</artifactId>
-			<version>4.1.3</version>
+			<version>5.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>

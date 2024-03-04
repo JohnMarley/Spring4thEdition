@@ -77,7 +77,7 @@ public class BankApp {
 		bankAccountService.findByCustomQuery(1000);
 
 		//--queryDsl
-		logger.info("getHighValueFds " + bankAccountService.getHighValueFds());
+//		logger.info("getHighValueFds " + bankAccountService.getHighValueFds());
 		
 		//-- query by example
 		logger.info("getAllBankAccountsWithoutFds " + bankAccountService.getAllBankAccountsWithoutFds());

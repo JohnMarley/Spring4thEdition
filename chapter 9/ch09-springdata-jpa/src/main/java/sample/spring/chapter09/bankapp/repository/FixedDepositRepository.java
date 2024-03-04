@@ -10,10 +10,12 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.QueryByExampleExecutor;
 import org.springframework.scheduling.annotation.Async;
 
+import sample.spring.chapter09.bankapp.domain.BankAccountDetails;
 import sample.spring.chapter09.bankapp.domain.FixedDepositDetails;
 
 public interface FixedDepositRepository extends Repository<FixedDepositDetails, Integer>,

@@ -33,7 +33,7 @@ public interface BankAccountService {
 	
 	List<BankAccountDetails> findByCustomQuery(int balance);
 	
-	Iterable<BankAccountDetails> getHighValueFds();
+//	Iterable<BankAccountDetails> getHighValueFds();
 	
 	Iterable<BankAccountDetails> getAllBankAccountsWithoutFds();
 	
