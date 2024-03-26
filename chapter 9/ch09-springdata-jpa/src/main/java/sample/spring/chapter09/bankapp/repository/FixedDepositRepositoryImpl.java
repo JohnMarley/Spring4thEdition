@@ -2,11 +2,14 @@ package sample.spring.chapter09.bankapp.repository;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import sample.spring.chapter09.bankapp.domain.FixedDepositDetails;
 import sample.spring.chapter09.bankapp.exceptions.NoFixedDepositFoundException;
+
+//import javax.persistence.EntityManager;
+//import javax.persistence.PersistenceContext;
 
 public class FixedDepositRepositoryImpl {
 

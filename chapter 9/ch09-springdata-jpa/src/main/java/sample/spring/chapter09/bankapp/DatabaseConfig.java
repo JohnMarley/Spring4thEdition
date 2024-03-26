@@ -2,9 +2,9 @@ package sample.spring.chapter09.bankapp;
 
 import java.util.Properties;
 
-import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
+import jakarta.persistence.EntityManagerFactory;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -31,7 +31,7 @@ public class DatabaseConfig {
 
 	// -- specifying destroyMethod="close" is not required. It's inferred by the
 	// Spring container.
-	@Bean(destroyMethod = "close")
+	@Bean
 	public DataSource dataSource() {
 		BasicDataSource dataSource = new BasicDataSource();
 		dataSource.setDriverClassName(env.getProperty("database.driverClassName"));
@@ -50,6 +50,7 @@ public class DatabaseConfig {
 		Properties props = new Properties();
 		props.put("hibernate.show_sql", "true");
 		props.put("hibernate.id.new_generator_mappings", "false");
+//		props.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
 		entityManagerFactory.setJpaProperties(props);
 		return entityManagerFactory;
 	}
@@ -58,7 +59,7 @@ public class DatabaseConfig {
 	public PlatformTransactionManager platformTransactionManager(EntityManagerFactory entityManagerFactory) {
 		return new JpaTransactionManager(entityManagerFactory);
 	}
-	
+
 	@Bean(name = "transactionTemplate")
 	public TransactionTemplate transactionTemplate(PlatformTransactionManager platformTransactionManager) {
 		return new TransactionTemplate(platformTransactionManager);

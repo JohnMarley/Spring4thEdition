@@ -6,18 +6,18 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
+//import org.springframework.data.domain.Example;
+//import org.springframework.data.domain.ExampleMatcher;
+//import org.springframework.data.domain.Pageable;
+//import org.springframework.data.domain.Slice;
+//import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.querydsl.core.types.Predicate;
+//import com.querydsl.core.types.Predicate;
 
 import sample.spring.chapter09.bankapp.domain.FixedDepositDetails;
-import sample.spring.chapter09.bankapp.domain.QFixedDepositDetails;
+//import sample.spring.chapter09.bankapp.domain.QFixedDepositDetails;
 import sample.spring.chapter09.bankapp.exceptions.NoFixedDepositFoundException;
 import sample.spring.chapter09.bankapp.repository.BankAccountRepository;
 import sample.spring.chapter09.bankapp.repository.FixedDepositRepository;
@@ -81,18 +81,18 @@ public class FixedDepositServiceImpl implements FixedDepositService {
 		return fixedDepositRepository.findByCustomQuery(tenure, fdAmount, active);
 	}
 
-	public List<FixedDepositDetails> findByTenure(int tenure, Pageable pageable) {
-		return fixedDepositRepository.findByTenure(tenure, pageable);
-	}
-
-	public List<FixedDepositDetails> findByTenure(int tenure, Sort sort) {
-		return fixedDepositRepository.findByTenure(tenure, sort);
-	}
-
-	@Override
-	public Slice<FixedDepositDetails> findByFdAmount(int amount, Pageable pageable) {
-		return fixedDepositRepository.findByFdAmount(amount, pageable);
-	}
+//	public List<FixedDepositDetails> findByTenure(int tenure, Pageable pageable) {
+//		return fixedDepositRepository.findByTenure(tenure, pageable);
+//	}
+//
+//	public List<FixedDepositDetails> findByTenure(int tenure, Sort sort) {
+//		return fixedDepositRepository.findByTenure(tenure, sort);
+//	}
+//
+//	@Override
+//	public Slice<FixedDepositDetails> findByFdAmount(int amount, Pageable pageable) {
+//		return fixedDepositRepository.findByFdAmount(amount, pageable);
+//	}
 
 	@Override
 	public List<FixedDepositDetails> findTop2ByTenure(int tenure) {
@@ -119,25 +119,25 @@ public class FixedDepositServiceImpl implements FixedDepositService {
 	public CompletableFuture<List<FixedDepositDetails>> findAllByFdAmount(int fdAmount) {
 		return fixedDepositRepository.findAllByFdAmount(fdAmount);
 	}
-	
+
 	//-- QuerDsl example
-	@Override
-	public Iterable<FixedDepositDetails> getHighValueFds() {
-		Predicate whereClause = QFixedDepositDetails.fixedDepositDetails.active.eq("Y")
-				.and(QFixedDepositDetails.fixedDepositDetails.fdAmount.gt(1000))
-				.and(QFixedDepositDetails.fixedDepositDetails.tenure.between(6, 12));
-		return fixedDepositRepository.findAll(whereClause);
-	}
+//	@Override
+//	public Iterable<FixedDepositDetails> getHighValueFds() {
+//		Predicate whereClause = QFixedDepositDetails.fixedDepositDetails.active.eq("Y")
+//				.and(QFixedDepositDetails.fixedDepositDetails.fdAmount.gt(1000))
+//				.and(QFixedDepositDetails.fixedDepositDetails.tenure.between(6, 12));
+//		return fixedDepositRepository.findAll(whereClause);
+//	}
 
 	//-- Query by Example
-	@Override
-	public Iterable<FixedDepositDetails> getAllFds() {
-		FixedDepositDetails fd = new FixedDepositDetails();
-		fd.setActive("Y");
-		fd.setFdAmount(500);
-		fd.setTenure(6);
-		ExampleMatcher matcher = ExampleMatcher.matching().withIgnorePaths("fixedDepositId");
-		Example<FixedDepositDetails> fdExample = Example.of(fd, matcher);
-		return fixedDepositRepository.findAll(fdExample);
-	}
+//	@Override
+//	public Iterable<FixedDepositDetails> getAllFds() {
+//		FixedDepositDetails fd = new FixedDepositDetails();
+//		fd.setActive("Y");
+//		fd.setFdAmount(500);
+//		fd.setTenure(6);
+//		ExampleMatcher matcher = ExampleMatcher.matching().withIgnorePaths("fixedDepositId");
+//		Example<FixedDepositDetails> fdExample = Example.of(fd, matcher);
+//		return fixedDepositRepository.findAll(fdExample);
+//	}
 }
