@@ -1,7 +1,7 @@
 package sample.spring.chapter10.bankapp.jms;
 
-import javax.jms.JMSException;
 
+import jakarta.jms.JMSException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +24,12 @@ import sample.spring.chapter10.bankapp.domain.FixedDepositDetails;
 public class MyAnnotatedJmsListener {
 	private static Logger logger = LogManager.getLogger(MyAnnotatedJmsListener.class);
 
-	@Autowired
-	private transient MailSender mailSender;
+//	@Autowired
+//	private transient MailSender mailSender;
 
-	@Autowired
-	@Qualifier("requestReceivedTemplate")
-	private transient SimpleMailMessage simpleMailMessage;
+//	@Autowired
+//	@Qualifier("requestReceivedTemplate")
+//	private transient SimpleMailMessage simpleMailMessage;
 
 	@Autowired
 	@Qualifier(value = "fixedDepositDao")
@@ -38,15 +38,15 @@ public class MyAnnotatedJmsListener {
 	@Autowired
 	private BankAccountDao bankAccountDao;
 
-	public void sendEmail() {
-		mailSender.send(simpleMailMessage);
-	}
+//	public void sendEmail() {
+//		mailSender.send(simpleMailMessage);
+//	}
 
 	@JmsListener(destination = "emailQueueDestination")
 	public void processEmailMessage(Message<String> message) {
 		logger.info("processEmailMessage() invoked");
-		simpleMailMessage.setTo(message.getPayload());
-		sendEmail();
+//		simpleMailMessage.setTo(message.getPayload());
+//		sendEmail();
 	}
 
 	@JmsListener(destination = "fixedDepositDestination")

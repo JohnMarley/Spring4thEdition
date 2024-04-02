@@ -3,10 +3,14 @@ package sample.spring.chapter10.bankapp;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
+//import javax.annotation.PostConstruct;
+//import javax.jms.ConnectionFactory;
 
+import jakarta.jms.ConnectionFactory;
+
+import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
-import org.apache.activemq.spring.ActiveMQConnectionFactory;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
@@ -15,39 +19,42 @@ import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.connection.CachingConnectionFactory;
 import org.springframework.jms.connection.JmsTransactionManager;
 import org.springframework.jms.core.JmsMessagingTemplate;
+import org.springframework.jms.core.JmsTemplate;
 
-@ImportResource(locations = "classpath:META-INF/spring/applicationContext.xml")
+
+//@ImportResource(locations = "classpath:META-INF/spring/applicationContext.xml")
 @Configuration
 @EnableJms //--corresponds to <jms:annotation-driven>
 public class JmsConfig {
 
 	//--corresponds to <amq:broker>
-	@PostConstruct
-	public void brokerService() throws Exception {
-		BrokerService broker = new BrokerService();
-		broker.addConnector("tcp://localhost:61616");
-		broker.start();
-	}
+//	@PostConstruct
+//	public void brokerService() throws Exception {
+//		BrokerService broker = new BrokerService();
+//		broker.addConnector("tcp://localhost:61616");
+//		broker.start();
+//	}
 	
 	
 	//--corresponds to <amq:connectionFactory>
 	@Bean
-	public ActiveMQConnectionFactory connectionFactory() {
+	public CachingConnectionFactory connectionFactory() {
 		ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory();
 		activeMQConnectionFactory.setBrokerURL("tcp://localhost:61616");
+//		activeMQConnectionFactory.setBrokerURL("vm://localhost");
 		List<String> trustedPackages = new ArrayList<>();
 		trustedPackages.add("sample.spring.chapter10.bankapp.domain");
 		trustedPackages.add("java.util");
 		activeMQConnectionFactory.setTrustedPackages(trustedPackages);
-		return activeMQConnectionFactory;
+		activeMQConnectionFactory.setConnectResponseTimeout(5000);
+		return new CachingConnectionFactory(activeMQConnectionFactory);
 	}
 
-	@Bean
-	public CachingConnectionFactory cachingConnectionFactory(ActiveMQConnectionFactory activeMQConnectionFactory) {
-		CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory();
-		cachingConnectionFactory.setTargetConnectionFactory(activeMQConnectionFactory);
-		return cachingConnectionFactory;
-	}
+//	@Bean
+//	public CachingConnectionFactory connectionFactory() {
+//		CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory();
+//		return cachingConnectionFactory;
+//	}
 
 	//--corresponds to <jms:listener-container>
 	@Bean
@@ -69,7 +76,15 @@ public class JmsConfig {
 	@Bean
 	public JmsMessagingTemplate jmsMessagingTemplate(CachingConnectionFactory cachingConnectionFactory) {
 		JmsMessagingTemplate jmsMessagingTemplate = new JmsMessagingTemplate(cachingConnectionFactory);
-		jmsMessagingTemplate.setDefaultDestinationName("fixedDepositDestination");
+//		jmsMessagingTemplate.setDefaultDestinationName("fixedDepositDestination");
 		return jmsMessagingTemplate;
 	}
+
+//	@Bean
+//	public JmsTemplate jmsTemplate(CachingConnectionFactory cachingConnectionFactory) {
+//		JmsTemplate jmsTemplate = new JmsTemplate(cachingConnectionFactory);
+//		// Optionally configure default destination
+//		// jmsTemplate.setDefaultDestinationName("yourQueueName");
+//		return jmsTemplate;
+//	}
 }

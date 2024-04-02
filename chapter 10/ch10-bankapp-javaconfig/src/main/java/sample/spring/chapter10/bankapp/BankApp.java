@@ -15,7 +15,7 @@ import sample.spring.chapter10.bankapp.service.FixedDepositService;
 public class BankApp {
 	private static Logger logger = LogManager.getLogger(BankApp.class);
 
-	public static void main(String args[]) throws Exception {
+	public static void main(String[] args) throws Exception {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 		context.scan("sample.spring");
 		context.refresh();
