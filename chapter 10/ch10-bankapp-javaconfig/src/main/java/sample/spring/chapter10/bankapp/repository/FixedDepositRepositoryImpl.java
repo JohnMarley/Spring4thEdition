@@ -1,32 +1,24 @@
-package sample.spring.chapter10.bankapp.dao;
+package sample.spring.chapter10.bankapp.repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import sample.spring.chapter10.bankapp.domain.BankAccountDetails;
 import sample.spring.chapter10.bankapp.domain.FixedDepositDetails;
+import sample.spring.chapter10.bankapp.exceptions.NoFixedDepositFoundException;
 
-@Repository(value = "fixedDepositDao")
-public class FixedDepositDaoImpl implements FixedDepositDao {
+@Repository(value = "fixedDepositRepositoryCustom")
+public class FixedDepositRepositoryImpl implements FixedDepositRepositoryCustom {
 
 //	@Autowired
 //	private JdbcTemplate jdbcTemplate;
 //
 //	@Autowired
 //	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+	@Autowired
+	private FixedDepositRepository fixedDepositRepository;
 
 	public int createFixedDeposit(final FixedDepositDetails fdd) {
 //		final String sql = "insert into fixed_deposit_details(account_id, fd_creation_date, amount, tenure, active, email) "
@@ -51,7 +43,7 @@ public class FixedDepositDaoImpl implements FixedDepositDao {
 //			}
 //		}, keyHolder);
 //		return keyHolder.getKey().intValue();
-		return 0;
+		return fixedDepositRepository.save(fdd).getFixedDepositId();
 	}
 
 	public FixedDepositDetails getFixedDeposit(final int fixedDepositId) {
@@ -73,7 +65,8 @@ public class FixedDepositDaoImpl implements FixedDepositDao {
 //						return fdd;
 //					}
 //				});
-		return new FixedDepositDetails();
+		return fixedDepositRepository.findById(fixedDepositId)
+				.orElseThrow(() -> new NoFixedDepositFoundException("no fixed deposit found by id =" + fixedDepositId));
 	}
 
 	public List<FixedDepositDetails> getInactiveFixedDeposits() {
@@ -94,7 +87,7 @@ public class FixedDepositDaoImpl implements FixedDepositDao {
 //					}
 //				});
 //		return fdds;
-		return List.of(new FixedDepositDetails());
+		return fixedDepositRepository.findByActive("N");
 	}
 
 	public void setFixedDepositsAsActive(List<FixedDepositDetails> fds) {
@@ -103,6 +96,8 @@ public class FixedDepositDaoImpl implements FixedDepositDao {
 //					.update("update fixed_deposit_details set active = 'Y' where fixed_deposit_id = ?",
 //							fd.getFixedDepositId());
 //		}
+		fds.forEach(fd -> fd.setActive("Y"));
+		fixedDepositRepository.saveAll(fds);
 	}
 
 	public List<FixedDepositDetails> findFixedDepositsByBankAccount(
@@ -124,6 +119,6 @@ public class FixedDepositDaoImpl implements FixedDepositDao {
 //					}
 //				});
 //		return fdds;
-		return List.of(new FixedDepositDetails());
+		return fixedDepositRepository.findByBankAccountId(BankAccountDetails.builder().accountId(bankAccountId).build());
 	}
 }

@@ -4,27 +4,19 @@ import java.util.List;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
-import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import sample.spring.chapter10.bankapp.dao.FixedDepositDao;
+import sample.spring.chapter10.bankapp.repository.FixedDepositRepository;
 import sample.spring.chapter10.bankapp.domain.FixedDepositDetails;
-
-import javax.mail.internet.AddressException;
-import javax.mail.internet.MimeMessage;
 
 @Component
 public class FixedDepositProcessorJob {
 	@Autowired
-	@Qualifier(value = "fixedDepositDao")
-	private FixedDepositDao myFixedDepositDao;
+	private FixedDepositRepository fixedDepositRepository;
 //
 //	@Autowired
 //	private transient JavaMailSender mailSender;
@@ -34,7 +26,7 @@ public class FixedDepositProcessorJob {
 //	private transient SimpleMailMessage simpleMailMessage;
 
 	private List<FixedDepositDetails> getInactiveFixedDeposits() {
-		return myFixedDepositDao.getInactiveFixedDeposits();
+		return fixedDepositRepository.getInactiveFixedDeposits();
 	}
 
 	@Scheduled(fixedRate = 5000)

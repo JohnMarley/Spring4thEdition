@@ -7,14 +7,12 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jms.annotation.JmsListener;
-import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import sample.spring.chapter10.bankapp.dao.BankAccountDao;
-import sample.spring.chapter10.bankapp.dao.FixedDepositDao;
+import sample.spring.chapter10.bankapp.repository.BankAccountRepositoryCustom;
+import sample.spring.chapter10.bankapp.repository.FixedDepositRepository;
 import sample.spring.chapter10.bankapp.domain.FixedDepositDetails;
 
 /**
@@ -32,24 +30,24 @@ public class MyAnnotatedJmsListener {
 //	private transient SimpleMailMessage simpleMailMessage;
 
 	@Autowired
-	@Qualifier(value = "fixedDepositDao")
-	private FixedDepositDao myFixedDepositDao;
+	private FixedDepositRepository fixedDepositRepository;
 
 	@Autowired
-	private BankAccountDao bankAccountDao;
+	private BankAccountRepositoryCustom bankAccountRepositoryCustom;
 
 //	public void sendEmail() {
 //		mailSender.send(simpleMailMessage);
 //	}
 
-	@JmsListener(destination = "emailQueueDestination")
+	@JmsListener(destination = "EMAIL_QUEUE_DESTINATION")
 	public void processEmailMessage(Message<String> message) {
 		logger.info("processEmailMessage() invoked");
+		logger.info(message.toString());
 //		simpleMailMessage.setTo(message.getPayload());
 //		sendEmail();
 	}
 
-	@JmsListener(destination = "fixedDepositDestination")
+	@JmsListener(destination = "FIXED_DEPOSIT_DESTINATION")
 	public void processFixedDeposit(Message<FixedDepositDetails> message) throws JMSException {
 		logger.info("processFixedDeposit() invoked");
 		FixedDepositDetails fdd = message.getPayload();
@@ -61,7 +59,7 @@ public class MyAnnotatedJmsListener {
 	@Transactional(transactionManager = "dbTxManager")
 	public int createFixedDeposit(FixedDepositDetails fdd) {
 		// -- create fixed deposit
-		bankAccountDao.subtractFromAccount(fdd.getBankAccountId(), fdd.getFdAmount());
-		return myFixedDepositDao.createFixedDeposit(fdd);
+		bankAccountRepositoryCustom.subtractFromAccount(fdd.getBankAccountId().getAccountId(), fdd.getFdAmount());
+		return fixedDepositRepository.createFixedDeposit(fdd);
 	}
 }

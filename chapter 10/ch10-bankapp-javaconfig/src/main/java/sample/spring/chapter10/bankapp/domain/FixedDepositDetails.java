@@ -1,79 +1,54 @@
 package sample.spring.chapter10.bankapp.domain;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Entity(name = "FixedDepositDetails")
+@Table(name = "fixed_deposit_details")
 public class FixedDepositDetails implements Serializable {
-	private static final long serialVersionUID = -8363144927181713477L;
+
+	@Serial
+	private static final long serialVersionUID = 437902588438864639L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "fixed_deposit_id")
 	private int fixedDepositId;
-	private int bankAccountId;
+
+	@ManyToOne
+	@JoinColumn(name = "ACCOUNT_ID", referencedColumnName = "ACCOUNT_ID", nullable = false)
+	private BankAccountDetails bankAccountId;
+
+	@Column(name = "fd_creation_date")
 	private Date fdCreationDate;
+
+	@Column(name = "amount")
 	private int fdAmount;
+
+	@Column(name = "tenure")
 	private int tenure;
+
+	@Column(name = "active")
 	private String active;
+
+	@Column(name = "email")
 	private String email;
-
-	public int getFixedDepositId() {
-		return fixedDepositId;
-	}
-
-	public void setFixedDepositId(int fixedDepositId) {
-		this.fixedDepositId = fixedDepositId;
-	}
-
-	public int getBankAccountId() {
-		return bankAccountId;
-	}
-
-	public void setBankAccountId(int bankAccountId) {
-		this.bankAccountId = bankAccountId;
-	}
-
-	public Date getFdCreationDate() {
-		return fdCreationDate;
-	}
-
-	public void setFdCreationDate(Date fdCreationDate) {
-		this.fdCreationDate = fdCreationDate;
-	}
-
-	public int getFdAmount() {
-		return fdAmount;
-	}
-
-	public void setFdAmount(int fdAmount) {
-		this.fdAmount = fdAmount;
-	}
-
-	public int getTenure() {
-		return tenure;
-	}
-
-	public void setTenure(int tenure) {
-		this.tenure = tenure;
-	}
-
-	public String getActive() {
-		return active;
-	}
-
-	public void setActive(String active) {
-		this.active = active;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	@Override
-	public String toString() {
-		return "FixedDepositDetails [fixedDepositId=" + fixedDepositId
-				+ ", bankAccountId=" + bankAccountId + ", fdCreationDate="
-				+ fdCreationDate + ", fdAmount=" + fdAmount + ", tenure="
-				+ tenure + ", active=" + active + "]";
-	}
 }

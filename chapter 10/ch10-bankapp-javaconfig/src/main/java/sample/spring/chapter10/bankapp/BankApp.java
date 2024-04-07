@@ -17,27 +17,30 @@ public class BankApp {
 
 	public static void main(String[] args) throws Exception {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+//		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DBConfig.class, JmsConfig.class);
 		context.scan("sample.spring");
 		context.refresh();
 
 		BankAccountService bankAccountService = context.getBean(BankAccountService.class);
-		BankAccountDetails bankAccountDetails = new BankAccountDetails();
-		bankAccountDetails.setBalanceAmount(1000);
-		bankAccountDetails.setLastTransactionTimestamp(new Date());
+		BankAccountDetails bankAccountDetails = BankAccountDetails.builder()
+						.balanceAmount(1000)
+						.lastTransactionTimestamp(new Date())
+						.build();
 
 		int bankAccountId = bankAccountService.createBankAccount(bankAccountDetails);
 
 		logger.info("Created bank account with id - " + bankAccountId);
 
 		FixedDepositService fixedDepositService = context.getBean(FixedDepositService.class);
-		FixedDepositDetails fdd = new FixedDepositDetails();
-		fdd.setActive("N");
-		fdd.setBankAccountId(bankAccountId);
-		fdd.setFdCreationDate(new Date());
-		fdd.setFdAmount(500);
-		fdd.setTenure(12);
-		// -- set the email id here
-		fdd.setEmail("sarin.java@gmail.com");
+		FixedDepositDetails fdd = FixedDepositDetails.builder()
+						.active("N")
+						.bankAccountId(bankAccountDetails)
+						.fdCreationDate(new Date())
+						.fdAmount(500)
+						.tenure(12)
+						.email("sarin.java@gmail.com")
+						.build();
+
 		fixedDepositService.createFixedDeposit(fdd);
 
 		Thread.sleep(5000);

@@ -14,7 +14,8 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import sample.spring.chapter10.bankapp.dao.FixedDepositDao;
+import sample.spring.chapter10.bankapp.jms.JmsQueuesEnum;
+import sample.spring.chapter10.bankapp.repository.FixedDepositRepository;
 import sample.spring.chapter10.bankapp.domain.FixedDepositDetails;
 
 @Service(value = "fixedDepositService")
@@ -22,41 +23,41 @@ public class FixedDepositServiceImpl implements FixedDepositService {
 	private static Logger logger = LogManager.getLogger(FixedDepositServiceImpl.class);
 
 	@Autowired
+	@Qualifier("jmsMessagingTemplate")
 	private JmsMessagingTemplate jmsMessagingTemplate;
 
 	@Autowired
-	@Qualifier(value = "fixedDepositDao")
-	private FixedDepositDao myFixedDepositDao;
+	private FixedDepositRepository fixedDepositRepository;
 
 	@Override
 	@Transactional(transactionManager = "jmsTxManager")
-	@CacheEvict(value = { "fixedDepositList" }, allEntries = true, beforeInvocation = true)
+//	@CacheEvict(value = { "fixedDepositList" }, allEntries = true, beforeInvocation = true)
 	public void createFixedDeposit(final FixedDepositDetails fdd) throws Exception {
 		logger.info("createFixedDeposit method invoked");
-		jmsMessagingTemplate.send("emailQueueDestination", MessageBuilder.withPayload(fdd.getEmail()).build());
+		jmsMessagingTemplate.send(JmsQueuesEnum.EMAIL_QUEUE_DESTINATION.name(), MessageBuilder.withPayload(fdd.getEmail()).build());
 		// --this JMS message goes to the default destination configured for the
 		// JmsTemplate 
 		jmsMessagingTemplate.send(MessageBuilder.withPayload(fdd).build());
 	}
 
 	@Override
-	@CachePut(value = { "fixedDeposit" }, key = "#fixedDepositId")
+//	@CachePut(value = { "fixedDeposit" }, key = "#fixedDepositId")
 	public FixedDepositDetails getFixedDeposit(int fixedDepositId) {
 		logger.info("getFixedDeposit method invoked with fixedDepositId " + fixedDepositId);
-		return myFixedDepositDao.getFixedDeposit(fixedDepositId);
+		return fixedDepositRepository.getFixedDeposit(fixedDepositId);
 	}
 
 	@Override
-	@Cacheable(value = { "fixedDeposit" }, key = "#fixedDepositId")
+//	@Cacheable(value = { "fixedDeposit" }, key = "#fixedDepositId")
 	public FixedDepositDetails getFixedDepositFromCache(int fixedDepositId) {
 		logger.info("getFixedDepositFromCache method invoked with fixedDepositId " + fixedDepositId);
 		throw new RuntimeException(
 				"This method throws exception because FixedDepositDetails object must come from the cache");
 	}
 
-	@Cacheable(value = { "fixedDepositList" })
+//	@Cacheable(value = { "fixedDepositList" })
 	public List<FixedDepositDetails> findFixedDepositsByBankAccount(int bankAccountId) {
 		logger.info("findFixedDepositsByBankAccount method invoked");
-		return myFixedDepositDao.findFixedDepositsByBankAccount(bankAccountId);
+		return fixedDepositRepository.findFixedDepositsByBankAccount(bankAccountId);
 	}
 }

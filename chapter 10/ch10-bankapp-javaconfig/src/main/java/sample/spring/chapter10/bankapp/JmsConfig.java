@@ -8,9 +8,12 @@ import java.util.List;
 
 import jakarta.jms.ConnectionFactory;
 
+import jakarta.jms.Queue;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
 
+import org.apache.activemq.command.ActiveMQQueue;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
@@ -20,6 +23,7 @@ import org.springframework.jms.connection.CachingConnectionFactory;
 import org.springframework.jms.connection.JmsTransactionManager;
 import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.jms.core.JmsTemplate;
+import sample.spring.chapter10.bankapp.jms.JmsQueuesEnum;
 
 
 //@ImportResource(locations = "classpath:META-INF/spring/applicationContext.xml")
@@ -34,14 +38,14 @@ public class JmsConfig {
 //		broker.addConnector("tcp://localhost:61616");
 //		broker.start();
 //	}
-	
-	
+
+
 	//--corresponds to <amq:connectionFactory>
-	@Bean
+	@Bean(name = "jmsConnectionFactory")
 	public CachingConnectionFactory connectionFactory() {
 		ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory();
-		activeMQConnectionFactory.setBrokerURL("tcp://localhost:61616");
-//		activeMQConnectionFactory.setBrokerURL("vm://localhost");
+//		activeMQConnectionFactory.setBrokerURL("tcp://localhost:61616");
+		activeMQConnectionFactory.setBrokerURL("vm://localhost");
 		List<String> trustedPackages = new ArrayList<>();
 		trustedPackages.add("sample.spring.chapter10.bankapp.domain");
 		trustedPackages.add("java.util");
@@ -59,7 +63,8 @@ public class JmsConfig {
 	//--corresponds to <jms:listener-container>
 	@Bean
 	public DefaultJmsListenerContainerFactory jmsListenerContainerFactory(
-			CachingConnectionFactory cachingConnectionFactory, JmsTransactionManager transactionManager) {
+			@Qualifier("jmsConnectionFactory") CachingConnectionFactory cachingConnectionFactory,
+			@Qualifier("jmsTxManager") JmsTransactionManager transactionManager) {
 		DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
 		factory.setConnectionFactory(cachingConnectionFactory);
 		factory.setTransactionManager(transactionManager);
@@ -67,16 +72,16 @@ public class JmsConfig {
 	}
 
 	@Bean(name = "jmsTxManager")
-	public JmsTransactionManager jmsTransactionManager(CachingConnectionFactory cachingConnectionFactory) {
+	public JmsTransactionManager jmsTransactionManager(@Qualifier("jmsConnectionFactory") CachingConnectionFactory cachingConnectionFactory) {
 		JmsTransactionManager transactionManager = new JmsTransactionManager();
 		transactionManager.setConnectionFactory(cachingConnectionFactory);
 		return transactionManager;
 	}
 
-	@Bean
-	public JmsMessagingTemplate jmsMessagingTemplate(CachingConnectionFactory cachingConnectionFactory) {
+	@Bean(name = "jmsMessagingTemplate")
+	public JmsMessagingTemplate jmsMessagingTemplate(@Qualifier("jmsConnectionFactory") CachingConnectionFactory cachingConnectionFactory) {
 		JmsMessagingTemplate jmsMessagingTemplate = new JmsMessagingTemplate(cachingConnectionFactory);
-//		jmsMessagingTemplate.setDefaultDestinationName("fixedDepositDestination");
+		jmsMessagingTemplate.setDefaultDestinationName(JmsQueuesEnum.FIXED_DEPOSIT_DESTINATION.name());
 		return jmsMessagingTemplate;
 	}
 
@@ -87,4 +92,14 @@ public class JmsConfig {
 //		// jmsTemplate.setDefaultDestinationName("yourQueueName");
 //		return jmsTemplate;
 //	}
+
+	@Bean
+	public Queue fixedDepositDestination() {
+		return new ActiveMQQueue(JmsQueuesEnum.FIXED_DEPOSIT_DESTINATION.name());
+	}
+
+	@Bean
+	public Queue emailQueueDestination() {
+		return new ActiveMQQueue(JmsQueuesEnum.EMAIL_QUEUE_DESTINATION.name());
+	}
 }
