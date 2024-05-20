@@ -31,7 +31,7 @@ public class FixedDepositServiceImpl implements FixedDepositService {
 
 	@Override
 	@Transactional(transactionManager = "jmsTxManager")
-//	@CacheEvict(value = { "fixedDepositList" }, allEntries = true, beforeInvocation = true)
+	@CacheEvict(value = { "fixedDepositList" }, allEntries = true, beforeInvocation = true)
 	public void createFixedDeposit(final FixedDepositDetails fdd) throws Exception {
 		logger.info("createFixedDeposit method invoked");
 		jmsMessagingTemplate.send(JmsQueuesEnum.EMAIL_QUEUE_DESTINATION.name(), MessageBuilder.withPayload(fdd.getEmail()).build());
@@ -41,21 +41,21 @@ public class FixedDepositServiceImpl implements FixedDepositService {
 	}
 
 	@Override
-//	@CachePut(value = { "fixedDeposit" }, key = "#fixedDepositId")
+	@CachePut(value = { "fixedDeposit" }, key = "#fixedDepositId")
 	public FixedDepositDetails getFixedDeposit(int fixedDepositId) {
 		logger.info("getFixedDeposit method invoked with fixedDepositId " + fixedDepositId);
 		return fixedDepositRepository.getFixedDeposit(fixedDepositId);
 	}
 
 	@Override
-//	@Cacheable(value = { "fixedDeposit" }, key = "#fixedDepositId")
+	@Cacheable(value = { "fixedDeposit" }, key = "#fixedDepositId")
 	public FixedDepositDetails getFixedDepositFromCache(int fixedDepositId) {
 		logger.info("getFixedDepositFromCache method invoked with fixedDepositId " + fixedDepositId);
 		throw new RuntimeException(
 				"This method throws exception because FixedDepositDetails object must come from the cache");
 	}
 
-//	@Cacheable(value = { "fixedDepositList" })
+	@Cacheable(value = { "fixedDepositList" })
 	public List<FixedDepositDetails> findFixedDepositsByBankAccount(int bankAccountId) {
 		logger.info("findFixedDepositsByBankAccount method invoked");
 		return fixedDepositRepository.findFixedDepositsByBankAccount(bankAccountId);
